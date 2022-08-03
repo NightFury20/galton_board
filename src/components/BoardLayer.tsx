@@ -31,10 +31,11 @@ const BoardLayer = (props : PropTypes) => {
         start,
     } = layer;
 
-    useEffect(() => {
-        const ballsInBuckets = buckets.reduce((acc, balls) => acc + balls, 0);
+    const ballsInBuckets = buckets.reduce((acc, balls) => acc + balls, 0);
+    const running = ballsInBuckets !== ballsInLayer;
 
-        if (ballsInBuckets === ballsInLayer) return;
+    useEffect(() => {
+        if (!running) return;
 
         const newBuckets = [...buckets];
         let probabilityMap = initialProbabilityMap;
@@ -55,11 +56,9 @@ const BoardLayer = (props : PropTypes) => {
             });
         }
 
-        for (let i = ballsInBuckets; i < ballsInLayer; i += 1) {
-            const bucketResult = getBucketResult(buckets, probabilityMap);
+        const bucketResult = getBucketResult(buckets, probabilityMap);
 
-            newBuckets[bucketResult] += 1;
-        }
+        newBuckets[bucketResult] += 1;
 
         setBuckets(newBuckets);
     });
@@ -73,7 +72,7 @@ const BoardLayer = (props : PropTypes) => {
                 level={5}
                 style={{ textAlign: 'center' }}
             >
-                {`Layer ${layer.index} - ${ballsInLayer} balls`}
+                {`${ballsInBuckets} / ${ballsInLayer} balls`}
             </Title>
 
             <Row>
@@ -130,7 +129,7 @@ const BoardLayer = (props : PropTypes) => {
                                 </Text>
 
                                 <Button
-                                    disabled={balls === 0}
+                                    disabled={balls === 0 || running}
                                     icon={<DownOutlined />}
                                     shape="circle"
                                     style={{ marginTop: '5px' }}

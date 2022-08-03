@@ -42,6 +42,9 @@ const GaltonBoard = () => {
                     newLayer={(start: number, balls: number) => {
                         const newBoardLayers = [...boardLayers];
 
+                        newBoardLayers[index].buckets[start] = 0;
+                        newBoardLayers[index].ballsInLayer -= balls;
+
                         if (index === boardLayers.length - 1) {
                             newBoardLayers.push({
                                 ballsInLayer: balls,
